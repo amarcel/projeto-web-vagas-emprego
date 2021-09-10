@@ -6,151 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Add icon library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/principal.css">
+    <link rel="stylesheet" href="css/load.css">
     <title>Vagas de empregos</title>
-    <style>
-        body {
-            background-color: #d9d9d9;
-            font-family: Arial;
-        }
-        .card {
-            /* Add shadows to create the "card" effect */
-            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-            transition: 0.3s;
-            border-radius: 20px;
-            background-color: #fff;
-            margin-bottom: 24px;
-            
-            display: flex;
-            flex-wrap: wrap;
-        }
-        @media (max-width: 800px) {
-            .container {
-                flex: 100%;
-            }
-        }
-
-        /* On mouse-over, add a deeper shadow */
-        .card:hover {
-            box-shadow: 0 16px 32px 0 rgba(0,0,0,0.2);
-        }
-
-        /* Add some padding inside the card container */
-        .container {
-            padding: 2px 16px;
-            flex: 50%;
-        }
-        .container > h4 {
-            font-size: 14pt;
-            color: blue;
-        }
-        h4 > i {
-            color: red;
-        }
-        /*LOAD ANIMADO:*/
-        .lds-ring {
-            display: inline-block;
-            position: relative;
-            width: 80px;
-            height: 80px;
-        }
-        .lds-ring div {
-            box-sizing: border-box;
-            display: block;
-            position: absolute;
-            width: 64px;
-            height: 64px;
-            margin: 8px;
-            border: 8px solid blue;
-            border-radius: 50%;
-            animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-            border-color: blue transparent transparent transparent;
-        }
-        .lds-ring div:nth-child(1) {
-            animation-delay: -0.45s;
-        }
-        .lds-ring div:nth-child(2) {
-            animation-delay: -0.3s;
-        }
-        .lds-ring div:nth-child(3) {
-            animation-delay: -0.15s;
-        }
-        @keyframes lds-ring {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-    </style>
 </head>
 <body onload="carregarDadosAPI()">
+    
     <h2>Vagas de emprego abertas:</h2>
+
     <div id="dados_vagas">
         <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
     </div>
-    <script>
-        function verificarWebStore() {
-            if (typeof(Storage) !== "undefined") {
-                alert("Possui suporte para gravar dados");
-            } else {
-                alert("Sorry... :(");
-            }
-        }
-        function favoritar(favorito, idVaga) {
-            let classe = favorito.className;
-            if (classe === "fa fa-heart-o") {
-                favorito.className = "fa fa-heart";
-                // Store
-                if(idVaga >= 0) {
-                    localStorage.setItem("vaga_"+idVaga, idVaga);
-                    console.log('Vaga ' + idVaga + ' inserida no BD browser');
-                }
-            } else if (classe === "fa fa-heart") {
-                favorito.className = "fa fa-heart-o";
-                // Remove
-                if(idVaga >= 0) {
-                    localStorage.removeItem("vaga_"+idVaga);
-                    console.log('Vaga ' + idVaga + ' removida do BD browser');
-                }
-            }
-        }
-        function acessarAPI(url) {
-            let request = new XMLHttpRequest();
-            request.open("GET", url, false);
-            request.send();
-            return request.responseText;
-        }
-        function carregarDadosAPI() {
-            let dados = acessarAPI("https://mock-json-service.glitch.me/");
-            let vagas = JSON.parse(dados);
-            
-            divDados = '';
-            vagas.forEach(e => {
-                // Retrieve
-                favoritou = localStorage.getItem("vaga_"+e.id);
-                if (parseInt(favoritou) >= 0 ) {
-                    classeFavorito = "fa fa-heart";
-                } else {
-                    classeFavorito = "fa fa-heart-o";
-                }
+    
+    <script src="js/principal.js"></script>
 
-                divDados += '<div class="card">';
-                divDados += '<div class="container">';
-                divDados += '<h4>';
-                divDados += '<b>Vaga ID '+e.id+'</b>&nbsp;&nbsp;&nbsp;<i onclick="favoritar(this,'+e.id+')" class="'+classeFavorito+'"></i>';
-                divDados += '</h4>';
-                divDados += '<p>Empresa: '+e.company+'</p>';
-                divDados += '<p>Descrição: '+e.description+'</p>';
-                divDados += '<p>Tipo: '+e.employmentType+'</p>';
-                divDados += '<p>Localização: '+e.location+'</p>';
-                divDados += '<p>Cargo: '+e.position+'</p>';
-                divDados += '<p>Habilidades: '+e.skillsRequired+'</p>';
-                divDados += '</div></div>';
-            });
-            document.getElementById("dados_vagas").innerHTML = divDados;
-        }
-    </script>
 </body>
 </html>
